@@ -34,7 +34,7 @@ namespace TicTac.mcts
         public Board findNextMove(Board board, int playerNo)
         {
             long start = (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
-            long end = start + 60 * getMillisForCurrentLevel();
+            long end = start + 10 * getMillisForCurrentLevel();
 
             opponent = 3 - playerNo;
             Arbore tree = new Arbore();
