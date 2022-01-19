@@ -11,6 +11,36 @@ namespace TicTac.mcts
         private static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private int level, opponent;
 
+        public static double calculUpperConf(int totalVisit, double nodeWinScore, int nodeVisit)
+        {
+            if (nodeVisit == 0)
+            {
+                return double.MaxValue;
+            }
+            return (nodeWinScore / (double)nodeVisit) + 1.41 * Math.Sqrt(Math.Log(totalVisit) / (double)nodeVisit);
+        }
+
+        public static Nod findNodMaxim(Nod node)
+        {
+            int parentVisit = node.getState().getVisitCount();
+            Nod max = null;
+            foreach (Nod c in node.getFrunze())
+            {
+                if (max == null)
+                {
+                    max = c;
+                }
+                else
+                {
+                    if (calculUpperConf(parentVisit, c.getState().getWinScore(), c.getState().getVisitCount()) > calculUpperConf(parentVisit, max.getState().getWinScore(), max.getState().getVisitCount()))
+                    {
+                        max = c;
+                    }
+                }
+            }
+            return max;
+        }
+
         public MonteCarloTreeSearch()
         {
             this.level = 3;
@@ -26,49 +56,49 @@ namespace TicTac.mcts
             this.level = level;
         }
 
-        public int getMillisForCurrentLevel()
+        public int getTimeoutLevel()
         {
             return 2 * (this.level - 1) + 1;
         }
 
-        public Board findNextMove(Board board, int playerNo)
+        public Board findNextMove(Board board, int playerNr)
         {
             long start = (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
-            long end = start + 10 * getMillisForCurrentLevel();
+            long end = start + 10 * getTimeoutLevel();
 
-            opponent = 3 - playerNo;
+            opponent = 3 - playerNr;
             Arbore tree = new Arbore();
             Nod rootNode = tree.getRadacina();
-            rootNode.getState().setBoard(board);
+            rootNode.getState().SetBoard(board);
             rootNode.getState().setPlayerNr(opponent);
 
             while ((long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds < end)
             {
                 Nod promisingNode = selectNodSansa(rootNode);
-                if (promisingNode.getState().getBoard().CheckFinish() == Board.IN_PROGRESS)
+                if (promisingNode.getState().GetBoard().CheckFinish() == Board.IN_PROGRESS)
                     expandeazaNod(promisingNode);
 
-                Nod nodeToExplore = promisingNode;
-                if (promisingNode.getChildArray().Count > 0)
+                Nod nodExplorat = promisingNode;
+                if (promisingNode.getFrunze().Count > 0)
                 {
-                    nodeToExplore = promisingNode.getRandomChildNode();
+                    nodExplorat = promisingNode.getFrunzaRandom();
                 }
-                int playoutResult = simulateRandomPlayout(nodeToExplore);
+                int rezultat = simuleazaJoc(nodExplorat);
 
-                backPropogation(nodeToExplore, playoutResult);
+                backPropogation(nodExplorat, rezultat);
             }
 
-            Nod winnerNode = rootNode.getChildWithMaxScore();
-            tree.setRoot(winnerNode);
-            return winnerNode.getState().getBoard();
+            Nod nodAles = rootNode.getFrunzaMax();
+            tree.setRadacina(nodAles);
+            return nodAles.getState().GetBoard();
         }
 
         public Nod selectNodSansa(Nod rootNode)
         {
             Nod node = rootNode;
-            while (node.getChildArray().Count != 0)
+            while (node.getFrunze().Count != 0)
             {
-                node = UCT.findNodMaxim(node);
+                node = MonteCarloTreeSearch.findNodMaxim(node);
             }
             return node;
         }
@@ -80,7 +110,7 @@ namespace TicTac.mcts
                 Nod newNode = new Nod(state);
                 newNode.setParinte(node);
                 newNode.getState().setPlayerNr(node.getState().getOpponent());
-                node.getChildArray().Add(newNode);
+                node.getFrunze().Add(newNode);
             };
         }
 
@@ -90,17 +120,17 @@ namespace TicTac.mcts
             while (aux != null)
             {
                 aux.getState().incrementVisit();
-                if (aux.getState().getPlayerNo() == playerNr)
+                if (aux.getState().getPlayerNr() == playerNr)
                     aux.getState().addScore(WIN_SCORE);
                 aux = aux.getParinte();
             }
         }
 
-        public int simulateRandomPlayout(Nod node)
+        public int simuleazaJoc(Nod node)
         {
             Nod nodAux = new Nod(node);
             State stateAux = nodAux.getState();
-            int boardStatus = stateAux.getBoard().CheckFinish();
+            int boardStatus = stateAux.GetBoard().CheckFinish();
 
             if (boardStatus == opponent)
             {
@@ -109,9 +139,9 @@ namespace TicTac.mcts
             }
             while (boardStatus == Board.IN_PROGRESS)
             {
-                stateAux.togglePlayer();
-                stateAux.randomPlay();
-                boardStatus = stateAux.getBoard().CheckFinish();
+                stateAux.TogglePlayer();
+                stateAux.RandomPlay();
+                boardStatus = stateAux.GetBoard().CheckFinish();
             }
 
             return boardStatus;

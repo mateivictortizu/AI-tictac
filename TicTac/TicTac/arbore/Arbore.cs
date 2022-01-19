@@ -19,14 +19,14 @@
             return radacina;
         }
 
-        public void setRoot(Nod radacina)
+        public void setRadacina(Nod radacina)
         {
             this.radacina = radacina;
         }
 
         public void addFrunza(Nod parinte, Nod frunza)
         {
-            parinte.getChildArray().Add(frunza);
+            parinte.getFrunze().Add(frunza);
         }
 
     }

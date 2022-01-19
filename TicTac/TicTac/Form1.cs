@@ -11,10 +11,8 @@ namespace TicTac
     {
 
         private Board _board;
-        private int _selected; // indexul piesei selectate
-        private PlayerType _currentPlayer; // om sau calculator
+        private PlayerType _currentPlayer;
         private Bitmap _boardImage;
-        private static Graphics gObject;
 
         public Form1()
         {
@@ -32,10 +30,9 @@ namespace TicTac
 
             _board = new Board();
             _currentPlayer = PlayerType.None;
-            _selected = -1; // nicio piesa selectata
 
-            this.ClientSize = new System.Drawing.Size(360, 385);
-            this.pictureBoxBoard.Size = new System.Drawing.Size(500, 500);
+            this.ClientSize = new Size(360, 385);
+            this.pictureBoxBoard.Size = new Size(500, 500);
 
             pictureBoxBoard.Refresh();
         }
@@ -58,14 +55,14 @@ namespace TicTac
             if (_board.CheckFinish() != Board.IN_PROGRESS)
             {
                 if(_board.CheckFinish()==Board.EGAL)
-                    System.Windows.Forms.MessageBox.Show("Jocul s-a terminat egal!");
+                    MessageBox.Show("Jocul s-a terminat egal!");
                 else
-                    System.Windows.Forms.MessageBox.Show("Jocul a fost castigat de playerul "+_board.CheckFinish());
+                    MessageBox.Show("Jocul a fost castigat de playerul "+_board.CheckFinish());
                 return;
 
             }
 
-            int[,] x = _board.getBoardValues();
+            int[,] x = _board.GetBoardValues();
 
             int mouseY = e.X / 120;
             int mouseX = e.Y / 120;
@@ -102,9 +99,6 @@ namespace TicTac
                     }
                 }
 
-                Console.WriteLine("---------------------------------\n\n\n\n\n");
-                _board.printBoard();
-                _board.printStatus();
                 if (_board.CheckFinish() == Board.IN_PROGRESS)
                 {
                     ComputerMove();
@@ -126,9 +120,6 @@ namespace TicTac
             }
         }
 
-        
-        
-
 
         private void ComputerMove()
         {
@@ -136,9 +127,7 @@ namespace TicTac
             if (this.usorToolStripMenuItem.Checked == true)
                 mcts.setLevel(1);
             _board=mcts.findNextMove(_board, 2);
-            _board.printBoard();
-            _board.printStatus();
-            int[,] x = _board.getBoardValues();
+            int[,] x = _board.GetBoardValues();
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -162,8 +151,6 @@ namespace TicTac
                     {
                         Graphics g = Graphics.FromImage(_boardImage);
                         Pen oPen = new Pen(Color.Black, 5);
-                        //g.DrawLine(xPen, i, j, i + 125, j + 125);
-                        //g.DrawLine(xPen, i+ 125, j, i, j + 125);
                         int xAbs = j * 125;
                         int yAbs = i * 125;
                         g.DrawEllipse(oPen, xAbs + 10, yAbs + 10, 90, 90);
@@ -175,16 +162,16 @@ namespace TicTac
             if (_board.CheckFinish() != Board.IN_PROGRESS)
             {
                 if (_board.CheckFinish() == Board.EGAL)
-                    System.Windows.Forms.MessageBox.Show("Jocul s-a terminat egal!");
+                    MessageBox.Show("Jocul s-a terminat egal!");
                 else
-                    System.Windows.Forms.MessageBox.Show("Jocul a fost castigat de playerul " + _board.CheckFinish());
+                    MessageBox.Show("Jocul a fost castigat de playerul " + _board.CheckFinish());
                 return;
 
             }
 
         }
 
-        private void jocNouToolStripMenuItem_Click(object sender, System.EventArgs e)
+        private void jocNouToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _board = new Board();
             _currentPlayer = PlayerType.Om;

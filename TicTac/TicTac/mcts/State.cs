@@ -18,8 +18,8 @@ namespace TicTac.mcts
 
         public State(State state)
         {
-            this.board = new Board(state.getBoard());
-            this.playerNr = state.getPlayerNo();
+            this.board = new Board(state.GetBoard());
+            this.playerNr = state.getPlayerNr();
             this.visitCount = state.getVisitCount();
             this.winScore = state.getWinScore();
         }
@@ -29,24 +29,24 @@ namespace TicTac.mcts
             this.board = new Board(board);
         }
 
-        public Board getBoard()
+        public Board GetBoard()
         {
             return board;
         }
 
-        public void setBoard(Board board)
+        public void SetBoard(Board board)
         {
             this.board = board;
         }
 
-        public int getPlayerNo()
+        public int getPlayerNr()
         {
             return playerNr;
         }
 
-        public void setPlayerNr(int playerNo)
+        public void setPlayerNr(int playerNr)
         {
-            this.playerNr = playerNo;
+            this.playerNr = playerNr;
         }
 
         public int getOpponent()
@@ -76,20 +76,20 @@ namespace TicTac.mcts
 
         public List<State> getAllPosiblStates()
         {
-            List<State> possibleStates = new List<State>();
-            List<Position> availablePositions = this.board.getEmptyPositions();
-            foreach(Position p in availablePositions) {
+            List<State> stariPosibile = new List<State>();
+            List<Position> mutariDisponibile = this.board.GetPozitiiLibere();
+            foreach(Position p in mutariDisponibile) {
                 State newState = new State(this.board);
-                newState.setPlayerNr(3 - this.playerNr);
-                newState.getBoard().MakeMove(newState.getPlayerNo(), p);
-                possibleStates.Add(newState);
+                newState.setPlayerNr(this.getOpponent());
+                newState.GetBoard().MakeMove(newState.getPlayerNr(), p);
+                stariPosibile.Add(newState);
             };
-            return possibleStates;
+            return stariPosibile;
         }
 
         public void incrementVisit()
         {
-            this.visitCount++;
+            this.visitCount = this.visitCount + 1;
         }
 
         public void addScore(double score)
@@ -98,15 +98,13 @@ namespace TicTac.mcts
                 this.winScore += score;
         }
 
-        public void randomPlay()
+        public void RandomPlay()
         {
-            List<Position> availablePositions = this.board.getEmptyPositions();
-            int totalPossibilities = availablePositions.Count;
-            int selectRandom = (int)(new Random().Next(0,1) * totalPossibilities);
-            this.board.MakeMove(this.playerNr, availablePositions[selectRandom]);
+            List<Position> availablePositions = this.board.GetPozitiiLibere();
+            this.board.MakeMove(this.playerNr, availablePositions[(int)(new Random().Next(0, 1) * availablePositions.Count)]);
         }
 
-        public void togglePlayer()
+        public void TogglePlayer()
         {
             this.playerNr = 3 - this.playerNr;
         }

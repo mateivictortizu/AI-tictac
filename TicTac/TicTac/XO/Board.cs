@@ -36,9 +36,9 @@ namespace TicTac.xo
 
         public Board(Board board)
         {
-            int boardLength = (int)Math.Sqrt(board.getBoardValues().Length);
+            int boardLength = (int)Math.Sqrt(board.GetBoardValues().Length);
             this.boardValues = new int[boardLength,boardLength];
-            int[,] boardValues = board.getBoardValues();
+            int[,] boardValues = board.GetBoardValues();
             int n = (int) Math.Sqrt(boardValues.Length);
             for (int i = 0; i < n; i++)
             {
@@ -56,12 +56,12 @@ namespace TicTac.xo
             boardValues[p.getX(),p.getY()] = player;
         }
 
-        public int[,] getBoardValues()
+        public int[,] GetBoardValues()
         {
             return boardValues;
         }
 
-        public void setBoardValues(int[,] boardValues)
+        public void SetBoardValues(int[,] boardValues)
         {
             this.boardValues = boardValues;
         }
@@ -75,18 +75,18 @@ namespace TicTac.xo
 
             for (int i = 0; i < boardSize; i++)
             {
-                int[] row = System.Linq.Enumerable.Range(0, boardValues.GetLength(1)).Select(x => boardValues[i, x]).ToArray(); 
+                int[] row = Enumerable.Range(0, boardValues.GetLength(1)).Select(x => boardValues[i, x]).ToArray(); 
                 int[] col = new int[boardSize];
                 for (int j = 0; j < boardSize; j++)
                 {
                     col[j] = boardValues[j,i];
                 }
 
-                int checkRowForWin = checkForWin(row);
+                int checkRowForWin = CheckForWin(row);
                 if (checkRowForWin != 0)
                     return checkRowForWin;
 
-                int checkColForWin = checkForWin(col);
+                int checkColForWin = CheckForWin(col);
                 if (checkColForWin != 0)
                     return checkColForWin;
 
@@ -94,21 +94,21 @@ namespace TicTac.xo
                 diag2[i] = boardValues[maxIndex - i,i];
             }
 
-            int checkDia1gForWin = checkForWin(diag1);
+            int checkDia1gForWin = CheckForWin(diag1);
             if (checkDia1gForWin != 0)
                 return checkDia1gForWin;
 
-            int checkDiag2ForWin = checkForWin(diag2);
+            int checkDiag2ForWin = CheckForWin(diag2);
             if (checkDiag2ForWin != 0)
                 return checkDiag2ForWin;
 
-            if (getEmptyPositions().Count > 0)
+            if (GetPozitiiLibere().Count > 0)
                 return IN_PROGRESS;
             else
                 return EGAL;
         }
 
-        public int checkForWin(int[] row)
+        public int CheckForWin(int[] row)
         {
             bool isEqual = true;
             int size = row.Length;
@@ -128,20 +128,7 @@ namespace TicTac.xo
                 return 0;
         }
 
-        public void printBoard()
-        {
-            int size = (int) Math.Sqrt(this.boardValues.Length);
-            for (int i = 0; i < size; i++)
-            {
-                for(int j=0;j<size;j++)
-                {
-                    Console.Write(boardValues[i,j] + " ");
-                }
-                Console.WriteLine('\n');
-            }
-        }
-
-        public List<Position> getEmptyPositions()
+        public List<Position> GetPozitiiLibere()
         {
             int size = (int) Math.Sqrt(this.boardValues.Length);
             List<Position> emptyPositions = new List<Position>();
@@ -156,23 +143,5 @@ namespace TicTac.xo
             return emptyPositions;
         }
 
-        public void printStatus()
-        {
-            switch (this.CheckFinish())
-            {
-                case PLAYER1:
-                    Console.WriteLine("Player 1 a castigat");
-                    break;
-                case PLAYER2:
-                    Console.WriteLine("Player 2 a castigat");
-                    break;
-                case EGAL:
-                    Console.WriteLine("Egalitate");
-                    break;
-                case IN_PROGRESS:
-                    Console.WriteLine("Jocul continua...");
-                    break;
-            }
-        }
     }
 }

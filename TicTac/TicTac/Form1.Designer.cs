@@ -140,7 +140,6 @@ namespace TicTac
         private ToolStripMenuItem dificultateToolStripMenuItem;
         private ToolStripMenuItem usorToolStripMenuItem;
         private ToolStripMenuItem greuToolStripMenuItem;
-        private System.Windows.Forms.Panel panel1;
         public PictureBox pictureBoxBoard;
     }
 }

@@ -39,7 +39,7 @@ namespace TicTac.arbore
             {
                 this.parinte = nod.getParinte();
             }
-            List<Nod> frunze = nod.getChildArray();
+            List<Nod> frunze = nod.getFrunze();
             foreach(Nod frunza in frunze)
             {
                 this.frunze.Add(new Nod(frunza));
@@ -57,19 +57,19 @@ namespace TicTac.arbore
 
         public void setParinte(Nod parent) { this.parinte = parent; }
 
-        public List<Nod> getChildArray() { return frunze; }
+        public List<Nod> getFrunze() { return frunze; }
 
-        public void setChildArray(List<Nod> childArray) { this.frunze = childArray; }
+        public void setFrunze(List<Nod> leafs) { this.frunze = leafs; }
 
-        public Nod getRandomChildNode()
+        public Nod getFrunzaRandom()
         {
-            int noOfPossibleMoves = this.frunze.Count;
-            int selectRandom = (int)(new Random().Next(0,1) * noOfPossibleMoves);
-            return this.frunze[selectRandom];
+            int nrMutari = this.frunze.Count;
+            int indexRandom = (int)(new Random().Next(0,1) * nrMutari);
+            return this.frunze[indexRandom];
         }
 
 
-        public Nod getChildWithMaxScore()
+        public Nod getFrunzaMax()
         {
             Nod max = null;
             foreach( Nod c in frunze)
